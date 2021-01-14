@@ -6,19 +6,19 @@
 ### 对象关系
 ```js
 const Obj = {
-    var: {
-        num: {
-            val:    Interger | Number
-            , unit: String
-        }
-        , str: String
-        , fun: Function
+  var: {
+    num: {
+      val:    Interger | Number
+      , unit: String
+    }
+    , str: String
+    , fun: Function
 
-        , map: Map
-        , array: Array
-    }
-    , selector: {
-    }
+    , map: Map
+    , array: Array
+  }
+  , selector: {
+  }
 }
 ```
 
