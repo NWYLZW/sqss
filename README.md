@@ -30,24 +30,28 @@ const Obj = {
 @defineProperty h height
 
 $size: 100px
-.main(:hover, :clicked)::slot-a[is-show=true]
+.main::slot-a[is-show=true]
   w: $size
   h: $size
   font: 10px
     weight: bold
 
-  $size:
-    w: $size
-    h: 40px
-  > .top
+  > .top, > .content
+    $size:
+	  w: $size
     w: $size.w
-    h: $size.h
+
+  > .top
+    h: 40px
     background-color: rgba(255, 255, 255, .8)
     .icon
       &:hover
         color: rgb(255, 255, 255)
       &:!hover
         color: rgb(0, 0, 0)
+	  &[:hover, :!hover]
+	    w: 40px
+		h: 40px
     .title
       color: black
       &[type='primary']
@@ -57,28 +61,36 @@ $size: 100px
 ```
 ```js
 const module = {
-  selectors: {
-    '.main': {
-      pseudoClass: {
-        or: [ 'hover', 'clicked' ]
-      }
-      , subControl: {
-        'slot-a': {
-          'is-show': true
-        }
-      }
-      , properties: {
-        'w': vars('$size'),
-        'h': vars('$size'),
-        'font': {
-          val: num(10, 'px'),
-          properties: {
-            'weight': str('bold')
-          }
-        }
-      }
-    }
-  }
+  selectors: [{
+    root:    root(),
+    parrent: preNode(),
+	selector: [{
+	  name: '.main'
+	  , subControl: {
+		'slot-a': {
+		  'is-show': true
+		}
+	  }
+	}]
+    , vars: {
+	  'size': {
+		'w': vars('size'),
+	  }
+	}
+	, properties: {
+	  'w': vars('size'),
+	  'h': vars('size'),
+	  'font': {
+		val: num(10, 'px'),
+		properties: {
+		  'weight': str('bold')
+		}
+	  }
+	  , selectors: {
+	    
+	  }
+	}
+  }]
   , vars: {
     'size': num(100, 'px')
   }
