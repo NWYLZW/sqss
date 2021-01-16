@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os, argparse, toml
-import sys
 
 from src.core.compiler import Compiler
 
@@ -34,4 +33,3 @@ def main():
     Compiler.deal_paths(
         command_args.path, command_args.output
     )
-    return 0
