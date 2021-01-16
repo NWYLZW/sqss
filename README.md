@@ -8,14 +8,14 @@
 const Obj = {
   var: {
     num: {
-      val:    Interger | Number
+      val:    Number
       , unit: String
     }
     , str: String
     , fun: Function
 
     , map: Map
-    , array: Array
+    , arr: Array
   }
   , selector: {
   }
@@ -60,12 +60,12 @@ $size: 100px
         color: red
 ```
 ```js
-const module = {
-  selectors: [{
-    root:    root(),
-    parrent: preNode(),
-	selector: [{
+const rootScope = {
+  scopes: [{
+	selectors: [{
 	  name: '.main'
+      , root:    root()
+      , parrent: preNode()
 	  , subControl: {
 		'slot-a': {
 		  'is-show': true
@@ -85,9 +85,6 @@ const module = {
 		properties: {
 		  'weight': str('bold')
 		}
-	  }
-	  , selectors: {
-	    
 	  }
 	}
   }]
