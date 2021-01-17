@@ -3,15 +3,16 @@
 import os
 from glob import glob
 
-class Compiler:
-    def __init__(self):
-        pass
+from src.core.scope import Scope
 
+class Compiler:
     @classmethod
     def deal_str(
             cls: 'Complier', textStr: str
     ) -> str:
-        return textStr
+        root = Scope(None)
+        root.deal_buffer(textStr)
+        return repr(root)
 
     @classmethod
     def deal_paths(
