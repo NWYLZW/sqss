@@ -25,7 +25,11 @@ class Scope(object):
         from src.core.selector import Selector
         from src.core.variable.var import Var
 
-        re_property = r'(.*):\s([\s|\S]*)'
+        selector = Selector.compile_selector(self, line)
+        if selector is not None:
+            self.selectors.append(selector)
+
+        re_property = r'(.*):\s*(\S[\s|\S]*)'
         _property = re.match(re_property, line)
         if _property is not None:
             name = _property.group(1)
@@ -124,7 +128,7 @@ class Scope(object):
             'deep':       self.deep,
             'vars':       [var.obj() for var in self.vars],
             'macros':     self.macros,
-            'selectors':  self.selectors,
+            'selectors':  [selector.obj() for selector in self.selectors],
             'properties': [_property.obj() for _property in self.properties],
             'scopes':     [scope.obj() for scope in self.scopes]
         }

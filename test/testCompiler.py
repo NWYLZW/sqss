@@ -10,6 +10,10 @@ class TestCompiler(unittest.TestCase):
         .main
           w: $size
           h: $size
+          > QLabel:!hover
+            color: black
+          > QLabel:hover
+            color: red
         .message
           $height: 40px
           w: $size

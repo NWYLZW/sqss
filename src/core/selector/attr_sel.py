@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 from src.core.morpheme import Morpheme
 from src.core.scope import Scope
 
 
-class SubControl(Morpheme):
+class AttrSel(Morpheme):
     def __init__(
             self
             , scope: Scope
