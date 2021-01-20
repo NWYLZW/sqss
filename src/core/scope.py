@@ -11,7 +11,8 @@ class Scope:
         from src.core.selector import Selector
         from src.core.variable.var import Var
 
-        self.parent = parent  # type: Scope
+        self.parent = parent       # type: Scope
+        self.mountSelector = None  # type: Selector
 
         self.vars       = []  # type: list[Var]
         self.macros     = []  # type: list[Macro]

@@ -238,32 +238,14 @@ class TestSelector(unittest.TestCase):
 
     &[hover=true][disabled=false]
       background-color: #66b1ff
-
-      &[hover=true]
-        background-color: #409eff
-        QLabel
-          color: #fff
-'''
-        test_strs1 = '''\
-test: 123
-.ElePyButton
-        '''
-        test_strs2 = '''\
-test: 123
-.ElePyButton
-  &[type='primary']
-    background-color: #409eff
-    border: 1px solid #409eff
-    QLabel
       QLabel
-        QLabel
-        '''
+        color: #fff
+
+      &[plain=true]
+        background-color: #409eff
+'''
         print(
-            Compiler.deal_str(test_strs1)
-        )
-        print('----------------')
-        print(
-            Compiler.deal_str(test_strs2)
+            Compiler.deal_str(test_strs0)
         )
 
 if __name__ == '__main__':

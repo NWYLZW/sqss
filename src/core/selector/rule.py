@@ -37,7 +37,16 @@ class Rule(Morpheme):
         self.parse_orders.append(item)
 
     def __str__(self):
-        return f"{self.name}{''.join([str(parse_order) for parse_order in self.parse_orders])}"
+        name = self.name
+        if self.scope.parent is not None:
+            parent_rule = self.scope.mountSelector.rules_str()
+            if self.name.find('&') == -1:
+                name = f'{parent_rule} {name}'
+            else:
+                name = self.name.replace(
+                    '&', parent_rule
+                )
+        return f"{name}{''.join([str(parse_order) for parse_order in self.parse_orders])}"
 
     def obj(self):
         return {

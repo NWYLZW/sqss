@@ -11,15 +11,27 @@ class Selector(Morpheme):
     ):
         super().__init__(scope)
         self.rules: list[Rule] = []
-        self.affiliated_scope: Scope = None
+        self._affiliated_scope: Scope = None
+
+    def rules_str(self):
+        return ', '.join([str(rule) for rule in self.rules])
 
     def __str__(self):
-        return ', '.join([str(rule) for rule in self.rules]) + ' {'
+        return f'{self.rules_str()} {{'
 
     def obj(self):
         return {
             'rules': [rule.obj() for rule in self.rules]
         }
+
+    @property
+    def affiliated_scope(self) -> Scope:
+        return self._affiliated_scope
+
+    @affiliated_scope.setter
+    def affiliated_scope(self, val: Scope):
+        val.mountSelector = self
+        self._affiliated_scope = val
 
     @staticmethod
     def compile(
