@@ -24,4 +24,4 @@ class AttrSel(Morpheme):
     def compile(
             scope: Scope, attr_sel_str: str
     ):
-        pass
+        print(attr_sel_str)

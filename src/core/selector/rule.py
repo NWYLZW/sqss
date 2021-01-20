@@ -80,57 +80,22 @@ class Rule(Morpheme):
         is_pseudo = False
 
         name = ''
-        pseudo_class_name = ''
 
         for index in range(len(rule_str)):
             ch = rule_str[index]
 
             if ch in '[:\n':
-                if is_pseudo:
-                    pseudo_class_name = pseudo_class_name[1:]
-                    is_not = False
-                    pseudo_class_names = re.match(r'\((.*)\)', pseudo_class_name)
-                    if pseudo_class_names is not None:
-                        pseudo_class_names = pseudo_class_names.group(1).split('|')
-                    else:
-                        pseudo_class_names = [pseudo_class_name]
-
-                    new_rules = []
-                    for rule in rules:
-                        new_rules = Rule.cp_rule(rule, len(pseudo_class_names) - len(rules))
-
-                    for i in range(len(pseudo_class_names)):
-                        pseudo_class_name = pseudo_class_names[i]
-
-                        if pseudo_class_name[0] == '!':
-                            is_not = True
-                            pseudo_class_name = pseudo_class_name[1:]
-
-                        _type = PseudoClassType.indexOf(pseudo_class_name)
-                        if _type is None: return []
-
-                        if i < len(rules):
-                            if len(pseudo_class_names) == 1:
-                                for rule in rules:
-                                    rule.append(
-                                        PseudoClass(scope, _type, is_not)
-                                    )
-                            else:
-                                rules[i].append(
-                                    PseudoClass(scope, _type, is_not)
-                                )
-                        else:
-                            new_rules[i - len(rules)].append(
-                                PseudoClass(scope, _type, is_not)
-                            )
-                    if new_rules:
-                        rules.append(*new_rules)
-
                 if is_name:
+                    is_name = False
                     r.name = name.strip()
                     rules.append(r)
-                is_name = False
+                if is_pseudo:
+                    PseudoClass.compile(scope, rules, pseudo_class_name)
+                if is_attr:
+                    AttrSel.compile(scope, attr)
+
                 if ch == ':':
+                    pseudo_class_name = ''
                     is_pseudo = True
                     if index == len(rule_str) - 1:
                         raise ValAssignedSetException()
@@ -139,10 +104,17 @@ class Rule(Morpheme):
                     if rule_str[index + 1] == ':':
                         is_sub = True
                         is_pseudo = False
+                if ch == '[':
+                    attr = ''
+                    is_attr = True
+                if ch == ']':
+                    is_attr = False
 
-            if is_pseudo:
-                pseudo_class_name += ch
             if is_name:
                 name += ch
+            if is_pseudo:
+                pseudo_class_name += ch
+            if is_attr:
+                attr += ch
 
         return rules

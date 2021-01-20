@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import re
 from enum import Enum
 
 from src.core.morpheme import Morpheme
@@ -77,3 +78,47 @@ class PseudoClass(Morpheme):
             'type': self.type.value,
             'is_not': self.is_not
         }
+
+    @staticmethod
+    def compile(
+            scope: Scope, rules: list['Rule'], pseudo_class_name: str
+    ):
+        from src.core.selector import Rule
+        pseudo_class_name = pseudo_class_name[1:]
+        is_not = False
+        pseudo_class_names = re.match(r'\((.*)\)', pseudo_class_name)
+        if pseudo_class_names is not None:
+            pseudo_class_names = pseudo_class_names.group(1).split('|')
+        else:
+            pseudo_class_names = [pseudo_class_name]
+
+        new_rules = []
+        for rule in rules:
+            new_rules = Rule.cp_rule(rule, len(pseudo_class_names) - len(rules))
+
+        for i in range(len(pseudo_class_names)):
+            pseudo_class_name = pseudo_class_names[i]
+
+            if pseudo_class_name[0] == '!':
+                is_not = True
+                pseudo_class_name = pseudo_class_name[1:]
+
+            _type = PseudoClassType.indexOf(pseudo_class_name)
+            if _type is None: return []
+
+            if i < len(rules):
+                if len(pseudo_class_names) == 1:
+                    for rule in rules:
+                        rule.append(
+                            PseudoClass(scope, _type, is_not)
+                        )
+                else:
+                    rules[i].append(
+                        PseudoClass(scope, _type, is_not)
+                    )
+            else:
+                new_rules[i - len(rules)].append(
+                    PseudoClass(scope, _type, is_not)
+                )
+        if new_rules:
+            rules.append(*new_rules)
