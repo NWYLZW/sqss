@@ -12,6 +12,9 @@ class Selector(Morpheme):
         super().__init__(scope)
         self.rules = []     # type: list[Rule]
 
+    def __str__(self):
+        return ', '.join([str(rule) for rule in self.rules])
+
     def obj(self):
         return {
             'rules': [rule.obj() for rule in self.rules]
@@ -24,7 +27,7 @@ class Selector(Morpheme):
         selector = Selector(scope)
         wait_deal_rules = line.split(',')
         for wait_deal_rule in wait_deal_rules:
-            rules = Rule.compile_rule(
+            rules = Rule.compile(
                 scope, wait_deal_rule + '\n'
             )
             for rule in rules:

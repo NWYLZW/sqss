@@ -11,5 +11,8 @@ class SubControl(Morpheme):
     ):
         super().__init__(scope)
 
+    def __str__(self):
+        return ''
+
     def obj(self):
         return {}

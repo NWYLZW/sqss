@@ -6,6 +6,30 @@ from src.core.selector import Selector
 
 
 class TestSelector(unittest.TestCase):
+    def test_compile_selector_attr_sel(self):
+        test_strs = {
+            '.btn[type=true]': {
+                "rules": [{
+                    'name': '.mai1_n',
+                    "attr_sels": [],
+                    "sub_control": [],
+                    "pseudo_classes": []
+                }]
+            }
+        }
+        for test_str, val in test_strs.items():
+            selector = Selector.compile_selector(
+                Scope(None), test_str
+            )
+            if selector is not None:
+                # print(test_str)
+                # print(
+                #     json.dumps(selector.obj(), indent=2)
+                # )
+                self.assertEqual(
+                    selector.obj(), val
+                )
+
     def test_compile_selector_pseudo_class(self):
         test_strs = {
             '.mai1_n:hover': {
@@ -14,7 +38,7 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }]
                 }]
@@ -25,7 +49,7 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }]
                 }, {
@@ -33,18 +57,21 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }]
                 }]
             },
-            '.mai1_n:(hover|!hover)': {
+            '.mai1_n:(hover|!hover):open': {
                 "rules": [{
                     'name': '.mai1_n',
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
+                        "is_not": False
+                    }, {
+                        "type": "open",
                         "is_not": False
                     }]
                 }, {
@@ -52,8 +79,11 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": True
+                    }, {
+                        "type": "open",
+                        "is_not": False
                     }]
                 }]
             },
@@ -63,7 +93,7 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": True
                     }]
                 }]
@@ -74,10 +104,10 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }, {
-                        "type": ":open",
+                        "type": "open",
                         "is_not": False
                     }]
                 }]
@@ -88,7 +118,7 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }]
                 }]
@@ -99,7 +129,7 @@ class TestSelector(unittest.TestCase):
                     "attr_sels": [],
                     "sub_control": [],
                     "pseudo_classes": [{
-                        "type": ":hover",
+                        "type": "hover",
                         "is_not": False
                     }]
                 }]
@@ -109,11 +139,12 @@ class TestSelector(unittest.TestCase):
             selector = Selector.compile_selector(
                 Scope(None), test_str
             )
+            print(selector)
             if selector is not None:
-                print(test_str)
-                print(
-                    json.dumps(selector.obj(), indent=2)
-                )
+                # print(test_str)
+                # print(
+                #     json.dumps(selector.obj(), indent=2)
+                # )
                 self.assertEqual(
                     selector.obj(), val
                 )
