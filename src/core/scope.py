@@ -73,10 +73,9 @@ class Scope:
             need_brace = not affiliated_scope or (
                     affiliated_scope and len(affiliated_scope.properties) == 0
             )
-            end = '}' if need_brace and not mode['braceBr'] else ''
-            lines.append(f"{indent}{selector}{end}")
-            if mode['braceBr'] and need_brace:
-                lines.append("}")
+            end = '}' if need_brace else ''
+            if not need_brace:
+                lines.append(f"{indent}{selector}{end}")
 
             if affiliated_scope:
                 lines.extend(
