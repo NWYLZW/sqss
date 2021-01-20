@@ -4,7 +4,10 @@ import os, argparse, toml
 
 from src.core.compiler import Compiler
 
-config = toml.load(rf'{os.getcwd()}\pyproject.toml')
+root_path = os.path.join(
+    __file__, '../../../..'
+)
+config = toml.load(f"{root_path}\\pyproject.toml")
 toolPoetry = config.get('tool')['poetry']
 
 def main():

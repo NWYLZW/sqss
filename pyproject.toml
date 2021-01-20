@@ -4,8 +4,14 @@ version     = "0.1.0"
 description = "pyqt's simple qss."
 authors     = ["yijie <yijie4188@gmail.com>"]
 license     = "MIT"
+homepage    = "https://github.com/NWYLZW/sqss"
+repository  = "https://github.com/NWYLZW/sqss"
 keywords    = [
   "compiler", "qss", "qt"
+]
+packages = [
+    { include = "src" },
+    { include = "src/**/*.py" },
 ]
 
   [[tool.poetry.source]]
@@ -14,6 +20,7 @@ keywords    = [
   default = true
 
   [tool.poetry.scripts]
+  main = "src.util.cli.command:main"
 
   [tool.poetry.dependencies]
   python = "^3.9"

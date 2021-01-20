@@ -3,6 +3,6 @@
 __all__ = ['Compiler']
 from src.core.compiler import Compiler
 
-__version__ = "1.0.0.0"
+__version__ = "0.1.0"
 
 
