@@ -8,11 +8,11 @@ from src.core.scope import Scope
 class Compiler:
     @classmethod
     def deal_str(
-            cls: 'Complier', textStr: str
-    ) -> str:
+            cls: 'Complier', text_str: str
+    ) -> Scope:
         root = Scope(None)
-        root.deal_buffer(textStr)
-        return repr(root)
+        root.deal_buffer(text_str)
+        return root
 
     @classmethod
     def deal_paths(

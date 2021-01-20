@@ -17,9 +17,12 @@ class Property(Morpheme):
         self.name = name
         re_fun = r'^\$(\S*)$'
         if re.match(re_fun, val) is not None:
-            self.var = scope.getVar(val[1:])
+            self.var = scope.get_var(val[1:])
         else:
             self.var = Str(scope, '', val)
+
+    def __str__(self):
+        return f'{self.name}: {str(self.var)};'
 
     def obj(self):
         return {

@@ -10,10 +10,11 @@ class Selector(Morpheme):
             , scope: Scope
     ):
         super().__init__(scope)
-        self.rules = []     # type: list[Rule]
+        self.rules: list[Rule] = []
+        self.affiliated_scope: Scope = None
 
     def __str__(self):
-        return ', '.join([str(rule) for rule in self.rules])
+        return ', '.join([str(rule) for rule in self.rules]) + ' {'
 
     def obj(self):
         return {

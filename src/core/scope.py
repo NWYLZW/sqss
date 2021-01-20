@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import json, re
 
-class Scope(object):
+class Scope:
     def __init__(
             self, parent: 'Scope'
     ):
@@ -18,6 +18,47 @@ class Scope(object):
         self.selectors  = []  # type: list[Selector]
         self.properties = []  # type: list[Property]
         self.scopes     = []  # type: list[Scope]
+
+    def obj(self):
+        return {
+            'deep':       self.deep,
+            'vars':       [var.obj() for var in self.vars],
+            'macros':     self.macros,
+            'selectors':  [selector.obj() for selector in self.selectors],
+            'properties': [_property.obj() for _property in self.properties],
+            'scopes':     [scope.obj() for scope in self.scopes]
+        }
+
+    def __repr__(self):
+        return json.dumps(
+            self.obj(), indent=2
+        )
+
+    def content_lines(self) -> list:
+        lines = []
+
+        indent = self.deep * 2 * ' '
+
+        for index in range(len(self.properties)):
+            _property = self.properties[index]
+            end = '}' if index == len(self.properties) - 1 and not self.is_root else ''
+            lines.append(f"{indent}{_property}{end}")
+        for selector in self.selectors:
+            affiliated_scope: Scope = selector.affiliated_scope
+
+            selector_str = f"{indent}{selector}{'' if affiliated_scope else '}'}"
+            if affiliated_scope and len(affiliated_scope.properties) == 0:
+                selector_str += '}'
+            lines.append(selector_str)
+
+            if affiliated_scope:
+                lines.extend(
+                    affiliated_scope.content_lines()
+                )
+        return lines
+
+    def __str__(self):
+        return '\n'.join(self.content_lines())
 
     def deal_line(self, line, line_num):
         from src.core.macro import Macro
@@ -86,6 +127,8 @@ class Scope(object):
                         child_scope_buffer
                     )
                     self.scopes.append(child_scope)
+                    self.cur_selector.affiliated_scope = child_scope
+
                     child_scope = None
                     child_scope_indent = -1
                     child_scope_buffer = ''
@@ -98,18 +141,29 @@ class Scope(object):
                 child_scope_buffer
             )
             self.scopes.append(child_scope)
+            self.cur_selector.affiliated_scope = child_scope
 
     def deal_buffer(self, buffer: str):
         self.divideScope(buffer)
 
-    def getVar(self, varName):
+    def get_var(self, varName):
         for var in self.vars:
             if var.name == varName:
                 return var
         if self.parent is not None:
-            return self.parent.getVar(varName)
+            return self.parent.get_var(varName)
 
         raise ValueError(f'Variable \'{varName}\' does not exist.')
+
+    @property
+    def cur_selector(self):
+        if len(self.selectors) == 0:
+            return None
+        return self.selectors[len(self.selectors) - 1]
+
+    @property
+    def is_root(self) -> bool:
+        return self.parent is None
 
     @property
     def root(self):
@@ -122,21 +176,3 @@ class Scope(object):
         if self.parent is None:
             return 0
         return self.parent.deep + 1
-
-    def obj(self):
-        return {
-            'deep':       self.deep,
-            'vars':       [var.obj() for var in self.vars],
-            'macros':     self.macros,
-            'selectors':  [selector.obj() for selector in self.selectors],
-            'properties': [_property.obj() for _property in self.properties],
-            'scopes':     [scope.obj() for scope in self.scopes]
-        }
-
-    def __repr__(self):
-        return json.dumps(
-            self.obj(), indent=2
-        )
-
-    def __str__(self):
-        return ''

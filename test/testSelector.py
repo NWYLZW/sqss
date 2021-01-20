@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from src.core.compiler import Compiler
 from src.core.scope import Scope
 from src.core.selector import Selector
 
@@ -222,30 +223,48 @@ class TestSelector(unittest.TestCase):
                 )
 
     def test_selector(self):
-        test_strs = '''\
-.mai1_n:x[asd='']
-.m-ai2n::y
-.m-ai2n::y:x[asd='']
-.mai3-n::(a | b):x[asd='']
-.ma_i4n::(a | b):(c | d)[asd='']
+        test_strs0 = '''\
+.ElePyButton
+  &[type='primary']
+    background-color: #409eff
+    border: 1px solid #409eff
+    QLabel
+      color: #fff
 
-mai1_n:x[asd='']
-m-ai2n::y
-m-ai2n::y:x[asd='']
-mai3-n::(a | b):x[asd='']
-ma_i4n::(a | b):(c | d)[asd='']
+    &[plain=true]
+      background-color: #ecf5ff
+      QLabel
+        color: #409eff
 
-#mai1_n:x[asd='']
-#m-ai2n::y
-#m-ai2n::y:x[asd='']
-#mai3-n::(a | b):x[asd='']
-#ma_i4n::(a | b):(c | d)[asd='']'''
-        for test_str in test_strs.split('\n'):
-            selector = Selector.compile(
-                Scope(None), test_str
-            )
-            if selector is not None:
-                print(selector.obj())
+    &[hover=true][disabled=false]
+      background-color: #66b1ff
+
+      &[hover=true]
+        background-color: #409eff
+        QLabel
+          color: #fff
+'''
+        test_strs1 = '''\
+test: 123
+.ElePyButton
+        '''
+        test_strs2 = '''\
+test: 123
+.ElePyButton
+  &[type='primary']
+    background-color: #409eff
+    border: 1px solid #409eff
+    QLabel
+      QLabel
+        QLabel
+        '''
+        print(
+            Compiler.deal_str(test_strs1)
+        )
+        print('----------------')
+        print(
+            Compiler.deal_str(test_strs2)
+        )
 
 if __name__ == '__main__':
     unittest.main()
