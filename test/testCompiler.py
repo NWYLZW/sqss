@@ -1,7 +1,7 @@
 import unittest
 
-from src.core.compiler import Compiler
-from src.core.scope import OutputMode
+from sqss.core.compiler import Compiler
+from sqss.core.scope import OutputMode
 
 
 class TestCompiler(unittest.TestCase):

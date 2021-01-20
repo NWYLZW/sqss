@@ -3,14 +3,14 @@
 import re
 from typing import Union
 
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
-from src.core.selector.attr_sel import AttrSel
-from src.core.selector.pseudo_class import PseudoClass, PseudoClassType
-from src.core.selector.sub_control import SubControl
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
+from sqss.core.selector.attr_sel import AttrSel
+from sqss.core.selector.pseudo_class import PseudoClass, PseudoClassType
+from sqss.core.selector.sub_control import SubControl
 
 # .main::(sub-control1 | sub-control2):(pseudo-class1 | pseudo-class2)
-from src.exception.ValAssignedSetException import ValAssignedSetException
+from sqss.exception.ValAssignedSetException import ValAssignedSetException
 
 
 class Rule(Morpheme):

@@ -22,10 +22,10 @@ class Scope:
     def __init__(
             self, parent: 'Scope'
     ):
-        from src.core.macro import Macro
-        from src.core.property import Property
-        from src.core.selector import Selector
-        from src.core.variable.var import Var
+        from sqss.core.macro import Macro
+        from sqss.core.property import Property
+        from sqss.core.selector import Selector
+        from sqss.core.variable.var import Var
 
         self.parent = parent       # type: Scope
         self.mountSelector = None  # type: Selector
@@ -87,10 +87,10 @@ class Scope:
         return '\n'.join(self.content_lines())
 
     def deal_line(self, line, line_num):
-        from src.core.macro import Macro
-        from src.core.property import Property
-        from src.core.selector import Selector
-        from src.core.variable.var import Var
+        from sqss.core.macro import Macro
+        from sqss.core.property import Property
+        from sqss.core.selector import Selector
+        from sqss.core.variable.var import Var
 
         selector = Selector.compile(self, line)
         if selector is not None:

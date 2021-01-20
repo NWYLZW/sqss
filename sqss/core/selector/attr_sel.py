@@ -2,9 +2,9 @@
 # -*- encoding: utf-8 -*-
 import re
 
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
-from src.core.variable.var import Var
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
+from sqss.core.variable.var import Var
 
 class AttrSel(Morpheme):
     def __init__(

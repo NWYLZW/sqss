@@ -3,8 +3,8 @@
 import re
 from enum import Enum
 
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
 
 class PseudoClassType(Enum):
     ACTIVE = 'active'
@@ -83,7 +83,7 @@ class PseudoClass(Morpheme):
     def compile(
             scope: Scope, rules: list['Rule'], pseudo_class_name: str
     ):
-        from src.core.selector import Rule
+        from sqss.core.selector import Rule
         pseudo_class_name = pseudo_class_name[1:]
         is_not = False
         pseudo_class_names = re.match(r'\((.*)\)', pseudo_class_name)

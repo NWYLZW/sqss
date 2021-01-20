@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.core.scope import Scope
+from sqss.core.scope import Scope
 
 class Morpheme(object):
     """

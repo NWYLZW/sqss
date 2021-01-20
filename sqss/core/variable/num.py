@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.core.scope import Scope
-from src.core.variable.var import Var
+from sqss.core.scope import Scope
+from sqss.core.variable.var import Var
 
-class Str(Var):
+class Num(Var):
     def __init__(
             self
             , scope: Scope

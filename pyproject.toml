@@ -10,8 +10,8 @@ keywords    = [
   "compiler", "qss", "qt"
 ]
 packages = [
-    { include = "src" },
-    { include = "src/**/*.py" },
+    { include = "sqss" },
+    { include = "sqss/**/*.py" },
 ]
 
   [[tool.poetry.source]]
@@ -20,7 +20,7 @@ packages = [
   default = true
 
   [tool.poetry.scripts]
-  main = "src.util.cli.command:main"
+  main = "sqss.util.cli.command:main"
 
   [tool.poetry.dependencies]
   python = "^3.9"

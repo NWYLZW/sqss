@@ -3,7 +3,7 @@
 import os
 from glob import glob
 
-from src.core.scope import Scope, OutputMode
+from sqss.core.scope import Scope, OutputMode
 
 
 class Compiler:

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import re
 
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
-from src.core.variable.str import Str
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
+from sqss.core.variable.str import Str
 
 
 class Property(Morpheme):

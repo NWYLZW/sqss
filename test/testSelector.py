@@ -1,9 +1,9 @@
 import json
 import unittest
 
-from src.core.compiler import Compiler
-from src.core.scope import Scope, OutputMode
-from src.core.selector import Selector
+from sqss.core.compiler import Compiler
+from sqss.core.scope import Scope, OutputMode
+from sqss.core.selector import Selector
 
 
 class TestSelector(unittest.TestCase):

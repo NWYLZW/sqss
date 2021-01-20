@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
 
 class SubControl(Morpheme):
     def __init__(
@@ -20,4 +20,4 @@ class SubControl(Morpheme):
     def compile(
             scope: Scope, rules: list['Rule'], pseudo_class_name: str
     ):
-        from src.core.selector import Rule
+        from sqss.core.selector import Rule

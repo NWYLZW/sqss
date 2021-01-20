@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from src.util.cli import command
+from sqss.util.cli import command
 
 if __name__ == '__main__':
     sys.exit(command.main())

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
 
 
 class Var(Morpheme):
@@ -22,9 +22,9 @@ class Var(Morpheme):
             , scope: Scope
             , name: str, val: str
     ) -> 'Var':
-        from src.core.variable.fun import Fun
-        from src.core.variable.num import Num
-        from src.core.variable.str import Str
+        from sqss.core.variable.fun import Fun
+        from sqss.core.variable.num import Num
+        from sqss.core.variable.str import Str
 
         re_num = r'(-?\d)(.*)'
         re_fun = r'\$(.*)\(.*\)'

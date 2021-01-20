@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import os, argparse, toml
 
-from src.core.compiler import Compiler
+from sqss.core.compiler import Compiler
 
 root_path = os.path.join(
     __file__, '../../../..'

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from src.core.morpheme import Morpheme
-from src.core.scope import Scope
-from src.core.selector.rule import Rule
+from sqss.core.morpheme import Morpheme
+from sqss.core.scope import Scope
+from sqss.core.selector.rule import Rule
 
 class Selector(Morpheme):
     def __init__(
