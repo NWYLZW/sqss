@@ -89,10 +89,12 @@ class Rule(Morpheme):
                     is_name = False
                     r.name = name.strip()
                     rules.append(r)
-                if is_pseudo:
-                    PseudoClass.compile(scope, rules, pseudo_class_name)
-                if is_attr:
-                    AttrSel.compile(scope, rules, attr)
+                else:
+                    if is_pseudo:
+                        PseudoClass.compile(scope, rules, pseudo_class_name)
+                    else:
+                        if is_attr:
+                            AttrSel.compile(scope, rules, attr)
 
                 if ch == ':':
                     pseudo_class_name = ''
@@ -107,8 +109,6 @@ class Rule(Morpheme):
                 if ch == '[':
                     attr = ''
                     is_attr = True
-                if ch == ']':
-                    is_attr = False
 
             if is_name:
                 name += ch

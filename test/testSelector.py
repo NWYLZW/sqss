@@ -6,7 +6,66 @@ from src.core.selector import Selector
 
 
 class TestSelector(unittest.TestCase):
-    def test_compile_selector_attr_sel(self):
+    def test_selector_attr_sel_and_pseudo_class(self):
+        test_strs = {
+            '.btn[type=\'primary\']:hover:!hover': {
+                "rules": [{
+                    'name': '.btn',
+                    "attr_sels": [{
+                        'name': 'type', 'val': '\'primary\''
+                    }],
+                    "sub_control": [],
+                    "pseudo_classes": [{
+                        "type": "hover",
+                        "is_not": False
+                    }, {
+                        "type": "hover",
+                        "is_not": True
+                    }]
+                }]
+            },
+            '.btn[plain=true][type=\'primary\']:(hover|!hover)': {
+                "rules": [{
+                    'name': '.btn',
+                    "attr_sels": [{
+                        'name': 'plain', 'val': 'true'
+                    }, {
+                        'name': 'type', 'val': '\'primary\''
+                    }],
+                    "sub_control": [],
+                    "pseudo_classes": [{
+                        "type": "hover",
+                        "is_not": False
+                    }]
+                }, {
+                    'name': '.btn',
+                    "attr_sels": [{
+                        'name': 'plain', 'val': 'true'
+                    }, {
+                        'name': 'type', 'val': '\'primary\''
+                    }],
+                    "sub_control": [],
+                    "pseudo_classes": [{
+                        "type": "hover",
+                        "is_not": True
+                    }]
+                }]
+            }
+        }
+        for test_str, val in test_strs.items():
+            selector = Selector.compile(
+                Scope(None), test_str
+            )
+            print(f"'{test_str}'", ' -> ', f"'{selector}'")
+            if selector is not None:
+                # print(
+                #     json.dumps(selector.obj(), indent=2)
+                # )
+                self.assertEqual(
+                    selector.obj(), val
+                )
+
+    def test_selector_attr_sel(self):
         test_strs = {
             '.btn[type=\'primary\']': {
                 "rules": [{
@@ -44,7 +103,7 @@ class TestSelector(unittest.TestCase):
                     selector.obj(), val
                 )
 
-    def test_compile_selector_pseudo_class(self):
+    def test_selector_pseudo_class(self):
         test_strs = {
             '.mai1_n:hover': {
                 "rules": [{
@@ -162,7 +221,7 @@ class TestSelector(unittest.TestCase):
                     selector.obj(), val
                 )
 
-    def test_compile_selector(self):
+    def test_selector(self):
         test_strs = '''\
 .mai1_n:x[asd='']
 .m-ai2n::y

@@ -3,7 +3,6 @@
 from src.core.morpheme import Morpheme
 from src.core.scope import Scope
 
-
 class SubControl(Morpheme):
     def __init__(
             self
@@ -16,3 +15,9 @@ class SubControl(Morpheme):
 
     def obj(self):
         return {}
+
+    @staticmethod
+    def compile(
+            scope: Scope, rules: list['Rule'], pseudo_class_name: str
+    ):
+        from src.core.selector import Rule
