@@ -25,7 +25,7 @@ class Scope(object):
         from src.core.selector import Selector
         from src.core.variable.var import Var
 
-        selector = Selector.compile_selector(self, line)
+        selector = Selector.compile(self, line)
         if selector is not None:
             self.selectors.append(selector)
 

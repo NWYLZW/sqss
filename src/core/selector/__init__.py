@@ -21,7 +21,7 @@ class Selector(Morpheme):
         }
 
     @staticmethod
-    def compile_selector(
+    def compile(
             scope: Scope, line: str
     ) -> 'Selector':
         selector = Selector(scope)

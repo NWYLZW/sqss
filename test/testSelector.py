@@ -18,11 +18,11 @@ class TestSelector(unittest.TestCase):
             }
         }
         for test_str, val in test_strs.items():
-            selector = Selector.compile_selector(
+            selector = Selector.compile(
                 Scope(None), test_str
             )
+            print(f"'{test_str}'", ' -> ', f"'{selector}'")
             if selector is not None:
-                # print(test_str)
                 # print(
                 #     json.dumps(selector.obj(), indent=2)
                 # )
@@ -136,12 +136,11 @@ class TestSelector(unittest.TestCase):
             }
         }
         for test_str, val in test_strs.items():
-            selector = Selector.compile_selector(
+            selector = Selector.compile(
                 Scope(None), test_str
             )
-            print(selector)
+            print(f"'{test_str}'", ' -> ', f"'{selector}'")
             if selector is not None:
-                # print(test_str)
                 # print(
                 #     json.dumps(selector.obj(), indent=2)
                 # )
@@ -169,7 +168,7 @@ ma_i4n::(a | b):(c | d)[asd='']
 #mai3-n::(a | b):x[asd='']
 #ma_i4n::(a | b):(c | d)[asd='']'''
         for test_str in test_strs.split('\n'):
-            selector = Selector.compile_selector(
+            selector = Selector.compile(
                 Scope(None), test_str
             )
             if selector is not None:

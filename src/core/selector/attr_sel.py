@@ -20,5 +20,8 @@ class AttrSel(Morpheme):
     def obj(self):
         return {}
 
-    # @staticmethod
-    # def compile():
+    @staticmethod
+    def compile(
+            scope: Scope, attr_sel_str: str
+    ):
+        pass
