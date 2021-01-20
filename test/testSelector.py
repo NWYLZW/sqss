@@ -8,10 +8,24 @@ from src.core.selector import Selector
 class TestSelector(unittest.TestCase):
     def test_compile_selector_attr_sel(self):
         test_strs = {
-            '.btn[type=true]': {
+            '.btn[type=\'primary\']': {
                 "rules": [{
-                    'name': '.mai1_n',
-                    "attr_sels": [],
+                    'name': '.btn',
+                    "attr_sels": [{
+                        'name': 'type', 'val': '\'primary\''
+                    }],
+                    "sub_control": [],
+                    "pseudo_classes": []
+                }]
+            },
+            '.btn[plain=true][type=\'primary\']': {
+                "rules": [{
+                    'name': '.btn',
+                    "attr_sels": [{
+                        'name': 'plain', 'val': 'true'
+                    }, {
+                        'name': 'type', 'val': '\'primary\''
+                    }],
                     "sub_control": [],
                     "pseudo_classes": []
                 }]

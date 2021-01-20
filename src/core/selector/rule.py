@@ -92,7 +92,7 @@ class Rule(Morpheme):
                 if is_pseudo:
                     PseudoClass.compile(scope, rules, pseudo_class_name)
                 if is_attr:
-                    AttrSel.compile(scope, attr)
+                    AttrSel.compile(scope, rules, attr)
 
                 if ch == ':':
                     pseudo_class_name = ''

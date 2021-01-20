@@ -37,7 +37,7 @@ class Scope(object):
             if name[0] == '$':
                 name = name[1:]
                 self.vars.append(
-                    Var.compile_var(self, name, val)
+                    Var.compile(self, name, val)
                 )
             else:
                 self.properties.append(

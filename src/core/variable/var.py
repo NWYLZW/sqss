@@ -17,7 +17,7 @@ class Var(Morpheme):
         self.val = val
 
     @classmethod
-    def compile_var(
+    def compile(
             cls
             , scope: Scope
             , name: str, val: str
