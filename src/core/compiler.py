@@ -3,13 +3,16 @@
 import os
 from glob import glob
 
-from src.core.scope import Scope
+from src.core.scope import Scope, OutputMode
+
 
 class Compiler:
     @classmethod
     def deal_str(
-            cls: 'Complier', text_str: str
+            cls: 'Complier', text_str: str, outPutConfigure: OutputMode = None
     ) -> Scope:
+        if outPutConfigure is not None:
+            Scope.outputMode = outPutConfigure
         root = Scope(None)
         root.deal_buffer(text_str)
         return root

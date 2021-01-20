@@ -1,8 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import json, re
+from enum import Enum
+
+
+class OutputMode(Enum):
+    DEFAULT = {
+        'isDeep': True,
+        'indentSize': 2,
+        'braceBr': False
+    }
+    COMMON = {
+        'isDeep': False,
+        'indentSize': 4,
+        'braceBr': True
+    }
 
 class Scope:
+    outputMode: OutputMode = OutputMode.DEFAULT
+
     def __init__(
             self, parent: 'Scope'
     ):
@@ -38,19 +54,29 @@ class Scope:
     def content_lines(self) -> list:
         lines = []
 
-        indent = self.deep * 2 * ' '
+        mode = Scope.outputMode.value
+        indent = (self.deep if mode['isDeep'] else 0) * mode['indentSize'] * ' '
 
         for index in range(len(self.properties)):
             _property = self.properties[index]
-            end = '}' if index == len(self.properties) - 1 and not self.is_root else ''
-            lines.append(f"{indent}{_property}{end}")
+            need_brace = index == len(self.properties) - 1 and not self.is_root
+            end = '}' if need_brace and not mode['braceBr'] else ''
+            temp_indent = indent
+            if not mode['isDeep']:
+                temp_indent = mode['indentSize'] * ' '
+            lines.append(f"{temp_indent}{_property}{end}")
+            if mode['braceBr'] and need_brace:
+                lines.append("}")
         for selector in self.selectors:
             affiliated_scope: Scope = selector.affiliated_scope
 
-            selector_str = f"{indent}{selector}{'' if affiliated_scope else '}'}"
-            if affiliated_scope and len(affiliated_scope.properties) == 0:
-                selector_str += '}'
-            lines.append(selector_str)
+            need_brace = not affiliated_scope or (
+                    affiliated_scope and len(affiliated_scope.properties) == 0
+            )
+            end = '}' if need_brace and not mode['braceBr'] else ''
+            lines.append(f"{indent}{selector}{end}")
+            if mode['braceBr'] and need_brace:
+                lines.append("}")
 
             if affiliated_scope:
                 lines.extend(

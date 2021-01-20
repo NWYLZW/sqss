@@ -2,7 +2,7 @@ import json
 import unittest
 
 from src.core.compiler import Compiler
-from src.core.scope import Scope
+from src.core.scope import Scope, OutputMode
 from src.core.selector import Selector
 
 
@@ -246,6 +246,10 @@ class TestSelector(unittest.TestCase):
 '''
         print(
             Compiler.deal_str(test_strs0)
+        )
+        print('----------------------')
+        print(
+            Compiler.deal_str(test_strs0, OutputMode.COMMON)
         )
 
 if __name__ == '__main__':
