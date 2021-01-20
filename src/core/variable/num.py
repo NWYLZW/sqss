@@ -10,3 +10,6 @@ class Num(Var):
             , name: str, val: str
     ):
         super().__init__(scope, name, val)
+
+    def __str__(self):
+        return self.val

@@ -117,6 +117,17 @@ class TestSelector(unittest.TestCase):
                     }]
                 }]
             },
+            '> .mai1_n:hover': {
+                "rules": [{
+                    'name': '> .mai1_n',
+                    "attr_sels": [],
+                    "sub_control": [],
+                    "pseudo_classes": [{
+                        "type": "hover",
+                        "is_not": False
+                    }]
+                }]
+            },
             '> .mai1_n:hover, mai3_n:hover': {
                 "rules": [{
                     'name': '> .mai1_n',

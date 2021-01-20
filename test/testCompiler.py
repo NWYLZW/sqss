@@ -1,11 +1,12 @@
 import unittest
 
 from src.core.compiler import Compiler
+from src.core.scope import OutputMode
 
 
 class TestCompiler(unittest.TestCase):
     def test_something(self):
-        print(Compiler.deal_str('''\
+        test_str = '''\
         $size: 100px
         .main
           w: $size
@@ -25,7 +26,9 @@ class TestCompiler(unittest.TestCase):
           .label
             w: $size - 16px
             h: $height
-        '''))
+        '''
+        print(Compiler.deal_str(test_str))
+        print(Compiler.deal_str(test_str, OutputMode.COMMON))
 
 
 

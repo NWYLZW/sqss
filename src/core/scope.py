@@ -95,21 +95,21 @@ class Scope:
         selector = Selector.compile(self, line)
         if selector is not None:
             self.selectors.append(selector)
-
-        re_property = r'(.*):\s*(\S[\s|\S]*)'
-        _property = re.match(re_property, line)
-        if _property is not None:
-            name = _property.group(1)
-            val = _property.group(2)
-            if name[0] == '$':
-                name = name[1:]
-                self.vars.append(
-                    Var.compile(self, name, val)
-                )
-            else:
-                self.properties.append(
-                    Property(self, name, val)
-                )
+        else:
+            re_property = r'(.*):\s*(\S[\s|\S]*)'
+            _property = re.match(re_property, line)
+            if _property is not None:
+                name = _property.group(1)
+                val = _property.group(2)
+                if name[0] == '$':
+                    name = name[1:]
+                    self.vars.append(
+                        Var.compile(self, name, val)
+                    )
+                else:
+                    self.properties.append(
+                        Property(self, name, val)
+                    )
 
     def divideScope(
             self
