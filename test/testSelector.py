@@ -235,26 +235,51 @@ class TestSelector(unittest.TestCase):
 
     def test_selector(self):
         test_strs0 = '''\
-.ElePyButton
-  &[type='primary']
-    background-color: #409eff
-    border: 1px solid #409eff
-    QLabel
-      color: #fff
+        .ElePyButton
+          margin: 0
+          padding: 10px 15px
+          border-radius: 4px
+          outline: none
+          background-color: #fff
+          border: 1px solid #dcdfe6
 
-    &[plain=true]
-      background-color: #ecf5ff
-      QLabel
-        color: #409eff
+          &[type='primary']
+            background-color: #409eff
+            border: 1px solid #409eff
+            QLabel
+              color: #fff
 
-    &[hover=true][disabled=false]
-      background-color: #66b1ff
-      QLabel
-        color: #fff
+            &[plain=true]
+              background-color: #ecf5ff
+              QLabel
+                color: #409eff
 
-      &[plain=true]
-        background-color: #409eff
-'''
+            &[hover=true][disabled=false]
+              background-color: #66b1ff
+              border: 1px solid #66b1ff
+              QLabel
+                color: #fff
+
+              &[plain=true]
+                background-color: #409eff
+
+          &[type='success']
+            background-color: #67c23a
+            border: 1px solid #67c23a
+            QLabel
+              color: #fff
+
+            &[plain=true]
+              background-color: #f0f9eb
+              QLabel
+                color: #67c23a
+
+            &[hover=true][disabled=false]
+              background-color: #85ce61
+              border: 1px solid #85ce61
+              QLabel
+                color: #fff
+        '''
         print(
             Compiler.deal_str(test_strs0)
         )

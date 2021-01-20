@@ -1,0 +1,31 @@
+@mixin typeButton($type, $bg-color, $plain-bg-color, $plain-bg-color-hover)
+  &[type=#{$type}]
+    background-color: #{$bg-color}
+    border: 1px solid #{$bg-color}
+    QLabel
+      color: #fff
+
+    &[plain=true]
+      background-color: #{$plain-bg-color}
+      QLabel
+        color: #{$bg-color}
+
+    &[hover=true][disabled=false]
+      background-color: #{$plain-bg-color-hover}
+      border: 1px solid #{$plain-bg-color-hover}
+      QLabel
+        color: #fff
+
+      &[plain=true]
+        background-color: #{$bg-color}
+
+.ElePyButton
+  margin: 0
+  padding: 10px 15px
+  border-radius: 4px
+  outline: none
+  background-color: #fff
+  border: 1px solid #dcdfe6
+
+  @include corner-icon('primary', #409eff, #ecf5ff, #66b1ff)
+  @include corner-icon('success', #67c23a, #f0f9eb, #67c23a)
