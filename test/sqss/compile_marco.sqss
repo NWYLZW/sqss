@@ -1,4 +1,4 @@
-@mixin typeButton($type, $bg-color, $plain-bg-color, $plain-bg-color-hover)
+@mixin type-button($type, $bg-color, $plain-bg-color, $plain-bg-color-hover)
   &[type=#{$type}]
     background-color: #{$bg-color}
     border: 1px solid #{$bg-color}
@@ -27,5 +27,5 @@
   background-color: #fff
   border: 1px solid #dcdfe6
 
-  @include corner-icon('primary', #409eff, #ecf5ff, #66b1ff)
-  @include corner-icon('success', #67c23a, #f0f9eb, #67c23a)
+  @include type-button('primary', #409eff, #ecf5ff, #66b1ff)
+  @include type-button('success', #67c23a, #f0f9eb, #67c23a)

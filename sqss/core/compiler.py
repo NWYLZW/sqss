@@ -14,7 +14,7 @@ class Compiler:
         if outPutConfigure is not None:
             Scope.outputMode = outPutConfigure
         root = Scope(None)
-        root.deal_buffer(text_str)
+        root.buffer = text_str
         return root
 
     @classmethod

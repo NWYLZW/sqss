@@ -5,7 +5,19 @@ from sqss.core.scope import OutputMode
 
 
 class TestCompiler(unittest.TestCase):
-    def test_compile_marco(self):
+    def test_compile_marco0(self):
+        test_strs0 = '''\
+        @mixin fun($arg1, $arg2)
+          #{$arg1}
+            color: #{$arg2}
+        .main
+          @include fun(test, #fff)
+        '''
+        print(
+            Compiler.deal_str(test_strs0)
+        )
+
+    def test_compile_marco1(self):
         with open('./sqss/compile_marco.sqss', 'r') as f:
             test_strs0 = f.read()
             print(

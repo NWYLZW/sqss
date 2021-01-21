@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json, re
 from enum import Enum
+from typing import Callable, Any
 
 
 class OutputMode(Enum):
@@ -27,6 +28,7 @@ class Scope:
         from sqss.core.selector import Selector
         from sqss.core.variable.var import Var
 
+        self.__buffer = []         # type: list[str]
         self.parent = parent       # type: Scope
         self.mountSelector = None  # type: Selector
 
@@ -92,85 +94,80 @@ class Scope:
         from sqss.core.selector import Selector
         from sqss.core.variable.var import Var
 
-        selector = Selector.compile(self, line)
-        if selector is not None:
-            self.selectors.append(selector)
+        macro = Macro.compile(self, line)
+        if macro is not None:
+            self.macros.append(macro)
         else:
-            re_property = r'(.*):\s*(\S[\s|\S]*)'
-            _property = re.match(re_property, line)
-            if _property is not None:
-                name = _property.group(1)
-                val = _property.group(2)
-                if name[0] == '$':
-                    name = name[1:]
-                    self.vars.append(
-                        Var.compile(self, name, val)
-                    )
-                else:
-                    self.properties.append(
-                        Property(self, name, val)
-                    )
+            selector = Selector.compile(self, line)
+            if selector is not None:
+                self.selectors.append(selector)
+            else:
+                re_property = r'(.*):\s*(\S[\s|\S]*)'
+                _property = re.match(re_property, line)
+                if _property is not None:
+                    name = _property.group(1)
+                    val = _property.group(2)
+                    if name[0] == '$':
+                        name = name[1:]
+                        self.vars.append(
+                            Var.compile(self, name, val)
+                        )
+                    else:
+                        self.properties.append(
+                            Property(self, name, val)
+                        )
 
-    def divideScope(
+    def divide_scope(
             self
-            , buffer: str
     ):
-        buffer_lines = buffer.split('\n')
-        scope_indent = -1
+        self.indent = -1
 
-        child_scope = None
-        child_scope_buffer = ''
-        child_scope_indent = -1
+        child = {
+            'scope': None,
+            'scope_buffer': '',
+            'scope_indent': -1
+        }
 
-        for line_num in range(len(buffer_lines)):
-            buffer_line = buffer_lines[
-                line_num
-            ]
+        def deal(buffer_line, line_num):
             indent = 0
             for ch in buffer_line:
                 if ch == ' ':
                     indent += 1
                 else:
                     break
-            if indent == len(buffer_line): continue
+            if indent == len(buffer_line): return
 
-            if scope_indent == -1:
-                scope_indent = indent
+            if self.indent == -1:
+                self.indent = indent
 
-            if indent > scope_indent:
-                if child_scope is None:
-                    child_scope = Scope(self)
-                    child_scope_indent = indent
+            if indent > self.indent:
+                if child['scope'] is None:
+                    child['scope'] = Scope(self)
+                    child['scope_indent'] = indent
                 else:
-                    if scope_indent < indent < child_scope_indent:
+                    if self.indent < indent < child['scope_indent']:
                         raise IndentationError(
                             'Improper indentation.\n' + f'{line_num}: {buffer_line}'
                         )
-                child_scope_buffer += buffer_line[child_scope_indent:] + '\n'
-            elif indent == scope_indent:
-                if child_scope is not None:
-                    child_scope.deal_buffer(
-                        child_scope_buffer
-                    )
-                    self.scopes.append(child_scope)
-                    self.cur_selector.affiliated_scope = child_scope
+                child['scope_buffer'] += buffer_line[child['scope_indent']:] + '\n'
+            elif indent == self.indent:
+                if child['scope'] is not None:
+                    child['scope'].buffer = child['scope_buffer']
+                    self.scopes.append(child['scope'])
+                    self.cur_selector.affiliated_scope = child['scope']
 
-                    child_scope = None
-                    child_scope_indent = -1
-                    child_scope_buffer = ''
+                    child['scope'] = None
+                    child['scope_indent'] = -1
+                    child['scope_buffer'] = ''
                 self.deal_line(
                     buffer_line[indent:], line_num
                 )
 
-        if child_scope is not None:
-            child_scope.deal_buffer(
-                child_scope_buffer
-            )
-            self.scopes.append(child_scope)
-            self.cur_selector.affiliated_scope = child_scope
-
-    def deal_buffer(self, buffer: str):
-        self.divideScope(buffer)
+        self.foreach_buffer(deal)
+        if child['scope'] is not None:
+            child['scope'].buffer = child['scope_buffer']
+            self.scopes.append(child['scope'])
+            self.cur_selector.affiliated_scope = child['scope']
 
     def get_var(self, varName):
         for var in self.vars:
@@ -180,6 +177,26 @@ class Scope:
             return self.parent.get_var(varName)
 
         raise ValueError(f'Variable \'{varName}\' does not exist.')
+
+    def foreach_buffer(self, deal: Callable[[str, int], Any]):
+        for line_num in range(len(self.buffer)):
+            buffer_line = self.buffer[line_num]
+            deal(buffer_line, line_num)
+
+    @property
+    def buffer(self):
+        return self.__buffer
+
+    @buffer.setter
+    def buffer(self, val):
+        self.__buffer = val.split('\n')
+        self.divide_scope()
+
+    @property
+    def cur_macro(self):
+        if len(self.macros) == 0:
+            return None
+        return self.macros[len(self.macros) - 1]
 
     @property
     def cur_selector(self):

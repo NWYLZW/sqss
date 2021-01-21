@@ -3,6 +3,6 @@
 __all__ = ['Compiler']
 from sqss.core.compiler import Compiler
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 
