@@ -30,7 +30,7 @@ class Selector(Morpheme):
 
     @affiliated_scope.setter
     def affiliated_scope(self, val: Scope):
-        val.mountSelector = self
+        val.mount_selector = self
         self._affiliated_scope = val
 
     @staticmethod

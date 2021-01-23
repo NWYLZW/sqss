@@ -15,7 +15,7 @@ class Compiler:
             Scope.outputMode = outPutConfigure
         root = Scope(None)
         root.buffer = text_str
-        return root
+        return root.compile()
 
     @classmethod
     def deal_paths(

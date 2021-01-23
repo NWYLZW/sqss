@@ -4,6 +4,8 @@ import json, re
 from enum import Enum
 from typing import Callable, Any
 
+from sqss.util.string_util import StringUtil
+
 
 class OutputMode(Enum):
     DEFAULT = {
@@ -21,16 +23,20 @@ class Scope:
     outputMode: OutputMode = OutputMode.DEFAULT
 
     def __init__(
-            self, parent: 'Scope'
+            self, parent: 'Scope', offset: int = 0
     ):
         from sqss.core.macro import Macro
         from sqss.core.property import Property
         from sqss.core.selector import Selector
         from sqss.core.variable.var import Var
 
-        self.__buffer = []         # type: list[str]
-        self.parent = parent       # type: Scope
-        self.mountSelector = None  # type: Selector
+        self.offset         = offset  # type: int
+        self.indent         = -1      # type: int
+        self.__buffer       = []      # type: list[str]
+        self.parent         = parent  # type: Scope
+
+        self.cur_child      = None    # type: Scope
+        self.mount_selector = None    # type: Selector
 
         self.vars       = []  # type: list[Var]
         self.macros     = []  # type: list[Macro]
@@ -88,7 +94,9 @@ class Scope:
     def __str__(self):
         return '\n'.join(self.content_lines())
 
-    def deal_line(self, line, line_num):
+    def deal_line(self, line: str):
+        if line.strip() == '': return
+
         from sqss.core.macro import Macro
         from sqss.core.property import Property
         from sqss.core.selector import Selector
@@ -117,57 +125,59 @@ class Scope:
                             Property(self, name, val)
                         )
 
+    def append_cur_child(self):
+        if self.cur_child is not None:
+            self.scopes.append(
+                self.cur_child.compile()
+            )
+            self.cur_selector.affiliated_scope = self.cur_child
+            self.cur_child = None
+
     def divide_scope(
             self
     ):
+        def deal_child(buffer_line, indent):
+            if self.cur_child is None:
+                self.cur_child = Scope(self, indent)
+            if indent < self.cur_child.offset:
+                raise IndentationError('Improper indentation.')
+
+            self.cur_child.buffer.append(
+                buffer_line[self.cur_child.offset:]
+            )
+
+        def deal_current(buffer_line, indent):
+            self.append_cur_child()
+            self.deal_line(buffer_line[indent:])
+
+        self.foreach_buffer(deal_current, deal_child)
+        self.append_cur_child()
+
+    def foreach_buffer(
+            self
+            , deal_current: Callable[[str, int], Any]
+            , deal_child:   Callable[[str, int], Any]
+    ):
+        line_num = 0
         self.indent = -1
+        while True:
+            if line_num == len(self.buffer): break
 
-        child = {
-            'scope': None,
-            'scope_buffer': '',
-            'scope_indent': -1
-        }
+            buffer_line = self.buffer[line_num]
+            indent = StringUtil.count_indent(buffer_line)
 
-        def deal(buffer_line, line_num):
-            indent = 0
-            for ch in buffer_line:
-                if ch == ' ':
-                    indent += 1
-                else:
-                    break
-            if indent == len(buffer_line): return
-
+            if indent == len(buffer_line):
+                line_num += 1
+                continue
             if self.indent == -1:
                 self.indent = indent
 
-            if indent > self.indent:
-                if child['scope'] is None:
-                    child['scope'] = Scope(self)
-                    child['scope_indent'] = indent
-                else:
-                    if self.indent < indent < child['scope_indent']:
-                        raise IndentationError(
-                            'Improper indentation.\n' + f'{line_num}: {buffer_line}'
-                        )
-                child['scope_buffer'] += buffer_line[child['scope_indent']:] + '\n'
-            elif indent == self.indent:
-                if child['scope'] is not None:
-                    child['scope'].buffer = child['scope_buffer']
-                    self.scopes.append(child['scope'])
-                    self.cur_selector.affiliated_scope = child['scope']
+            if indent == self.indent:
+                deal_current(buffer_line, indent)
+            elif indent > self.indent:
+                deal_child(buffer_line, indent)
 
-                    child['scope'] = None
-                    child['scope_indent'] = -1
-                    child['scope_buffer'] = ''
-                self.deal_line(
-                    buffer_line[indent:], line_num
-                )
-
-        self.foreach_buffer(deal)
-        if child['scope'] is not None:
-            child['scope'].buffer = child['scope_buffer']
-            self.scopes.append(child['scope'])
-            self.cur_selector.affiliated_scope = child['scope']
+            line_num += 1
 
     def get_var(self, varName):
         for var in self.vars:
@@ -178,10 +188,9 @@ class Scope:
 
         raise ValueError(f'Variable \'{varName}\' does not exist.')
 
-    def foreach_buffer(self, deal: Callable[[str, int], Any]):
-        for line_num in range(len(self.buffer)):
-            buffer_line = self.buffer[line_num]
-            deal(buffer_line, line_num)
+    def compile(self) -> 'Scope':
+        self.divide_scope()
+        return self
 
     @property
     def buffer(self):
@@ -190,7 +199,6 @@ class Scope:
     @buffer.setter
     def buffer(self, val):
         self.__buffer = val.split('\n')
-        self.divide_scope()
 
     @property
     def cur_macro(self):

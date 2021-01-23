@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from sqss.core.compiler import Compiler
@@ -50,6 +51,9 @@ class TestCompiler(unittest.TestCase):
             w: $size - 16px
             h: $height
         '''
+        # print(json.dumps(
+        #     Compiler.deal_str(test_str).obj(), indent=4
+        # ))
         print(Compiler.deal_str(test_str))
         print(Compiler.deal_str(test_str, OutputMode.COMMON))
 

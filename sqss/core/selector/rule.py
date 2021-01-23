@@ -39,7 +39,7 @@ class Rule(Morpheme):
     def __str__(self):
         name = self.name
         if self.scope.parent is not None:
-            parent_rule = self.scope.mountSelector.rules_str()
+            parent_rule = self.scope.mount_selector.rules_str()
             if self.name.find('&') == -1:
                 name = f'{parent_rule} {name}'
             else:
