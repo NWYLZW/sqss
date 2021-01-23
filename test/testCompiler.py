@@ -12,11 +12,10 @@ class TestCompiler(unittest.TestCase):
           #{$arg1}
             color: #{$arg2}
         .main
-          @include fun(test, #fff)
+          @include fun(test1, #fff)
+          @include fun(test2, #fff)
         '''
-        print(
-            Compiler.deal_str(test_strs0)
-        )
+        print(Compiler.deal_str(test_strs0))
 
     def test_compile_marco1(self):
         with open('./sqss/compile_marco.sqss', 'r') as f:

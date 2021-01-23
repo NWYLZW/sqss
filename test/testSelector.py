@@ -279,6 +279,9 @@ class TestSelector(unittest.TestCase):
               border: 1px solid #85ce61
               QLabel
                 color: #fff
+
+              &[plain=true]
+                background-color: #67c23a
         '''
         print(
             Compiler.deal_str(test_strs0)

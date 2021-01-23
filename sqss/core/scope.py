@@ -4,6 +4,7 @@ import json, re
 from enum import Enum
 from typing import Callable, Any
 
+from sqss.exception.CompileException import CompileException
 from sqss.util.string_util import StringUtil
 
 
@@ -30,8 +31,10 @@ class Scope:
         from sqss.core.selector import Selector
         from sqss.core.variable.var import Var
 
+        self.status         = 'init'  # type: str
         self.offset         = offset  # type: int
         self.indent         = -1      # type: int
+        self.deal_line_num  = 0       # type: int
         self.__buffer       = []      # type: list[str]
         self.parent         = parent  # type: Scope
 
@@ -48,7 +51,7 @@ class Scope:
         return {
             'deep':       self.deep,
             'vars':       [var.obj() for var in self.vars],
-            'macros':     self.macros,
+            'macros':     [macro.obj() for macro in self.macros],
             'selectors':  [selector.obj() for selector in self.selectors],
             'properties': [_property.obj() for _property in self.properties],
             'scopes':     [scope.obj() for scope in self.scopes]
@@ -105,6 +108,7 @@ class Scope:
         macro = Macro.compile(self, line)
         if macro is not None:
             self.macros.append(macro)
+            self.status = 'macro-deal'
         else:
             selector = Selector.compile(self, line)
             if selector is not None:
@@ -133,9 +137,66 @@ class Scope:
             self.cur_selector.affiliated_scope = self.cur_child
             self.cur_child = None
 
-    def divide_scope(
+    def foreach_buffer(
             self
+            , deal_current: Callable[[str, int], Any]
+            , deal_child:   Callable[[str, int], Any]
     ):
+        from sqss.core.macro import Macro
+
+        buffer_line= ''
+        self.indent = -1
+        self.deal_line_num = 0
+        try:
+            while True:
+                if self.deal_line_num == len(self.buffer):
+                    pre = len(self.buffer)
+                    if self.status == 'macro-deal':
+                        cur_macro: Macro = self.macros[len(self.macros) - 1]
+                        cur_macro.deal_data()
+                        self.status = 'common-deal'
+                    if pre == len(self.buffer): break
+
+                buffer_line = self.buffer[self.deal_line_num]
+                indent = StringUtil.count_indent(buffer_line)
+
+                if indent == len(buffer_line):
+                    self.deal_line_num += 1
+                    continue
+                if self.indent == -1:
+                    self.indent = indent
+
+                if indent == self.indent:
+                    if self.status == 'macro-deal':
+                        cur_macro: Macro = self.macros[len(self.macros) - 1]
+                        cur_macro.deal_data()
+                        self.status = 'common-deal'
+                        buffer_line = self.buffer[self.deal_line_num]
+                        indent = StringUtil.count_indent(buffer_line)
+
+                        if indent == len(buffer_line):
+                            self.deal_line_num += 1
+                            continue
+
+                    deal_current(buffer_line, indent)
+                elif indent > self.indent:
+                    if self.status != 'macro-deal':
+                        deal_child(buffer_line, indent)
+                    else:
+                        cur_macro: Macro = self.macros[len(self.macros) - 1]
+                        cur_macro.append_child(
+                            buffer_line[self.indent:]
+                        )
+
+                self.deal_line_num += 1
+
+        except Exception as e:
+            if not self.is_root:
+                raise e
+            else:
+                raise CompileException(self.deal_line_num, buffer_line, str(e))
+
+    def compile(self) -> 'Scope':
         def deal_child(buffer_line, indent):
             if self.cur_child is None:
                 self.cur_child = Scope(self, indent)
@@ -152,32 +213,7 @@ class Scope:
 
         self.foreach_buffer(deal_current, deal_child)
         self.append_cur_child()
-
-    def foreach_buffer(
-            self
-            , deal_current: Callable[[str, int], Any]
-            , deal_child:   Callable[[str, int], Any]
-    ):
-        line_num = 0
-        self.indent = -1
-        while True:
-            if line_num == len(self.buffer): break
-
-            buffer_line = self.buffer[line_num]
-            indent = StringUtil.count_indent(buffer_line)
-
-            if indent == len(buffer_line):
-                line_num += 1
-                continue
-            if self.indent == -1:
-                self.indent = indent
-
-            if indent == self.indent:
-                deal_current(buffer_line, indent)
-            elif indent > self.indent:
-                deal_child(buffer_line, indent)
-
-            line_num += 1
+        return self
 
     def get_var(self, varName):
         for var in self.vars:
@@ -187,10 +223,6 @@ class Scope:
             return self.parent.get_var(varName)
 
         raise ValueError(f'Variable \'{varName}\' does not exist.')
-
-    def compile(self) -> 'Scope':
-        self.divide_scope()
-        return self
 
     @property
     def buffer(self):
