@@ -32,6 +32,7 @@ class TestCompiler(unittest.TestCase):
         test_str = '''\
         $size: 100px
         .main
+          color: rgba(12, 213, 23, 4)
           w: $size
           h: $size
           > QLabel:!hover
